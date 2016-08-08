@@ -1,12 +1,14 @@
 (function (UNDEFINED) {
     "use strict";
-    var globalScope = typeof global !== "undefined" ? global : window,
+    var deadLoop = "dead loop",
+        globalScope = typeof global === "object" ? global : window,
         FALSE = !1,
         TRUE = !0,
         NULL = null,
         PROTO = "prototype",
         CALL = "call",
         APPLY = "apply",
+        BIND = "bind",
         LEN = "length",
         arrayProto = [],
         stringProto = String[PROTO],
@@ -17,162 +19,171 @@
         callSlice = uncurryCall(arrayProto.slice),
         callExec = uncurryCall(regExpProto.exec),
         callToString = uncurryCall({}.toString),
-        format, formatString, formatDate,
-        dataType = "Null,Undefined,Boolean,RegExp,Function,Array,Object,Number,String,Date".split(",");
-    for (var index in dataType) {
-        !function (dataType) {
-            globalScope["is" + dataType] = function (obj) {
-                return callToString(obj) === "[object " + dataType + "]";
-            }
-        } (dataType[index]);
-    }
+        format, formatString, formatDate;
+    each("Null,Undefined,Boolean,RegExp,Function,Array,Object,Number,String,Date".split(","), function (dataType) {
+        globalScope["is" + dataType] = function (obj) {
+            return callToString(obj) === "[object " + dataType + "]";
+        };
+    });
     var IS_FUNCTION = isFunction,
         IS_ARRAY = isArray,
         IS_OBJECT = isObject,
         IS_STRING = isString,
         IS_Number = isNumber,
         IS_DATE = isDate;
-    if (!globalScope.Promise__) {
-        var pending = 'pending',
-            resolved = 'resolved',
-            rejected = 'rejected',
-            psKey = '[[PromiseStatus]]',
-            pvKey = '[[PromiseValue]]',
+    if (!shortFun[PROTO][BIND]) shortFun[PROTO][BIND] = function (obj) {
+        var self = this, args = callSlice(arguments, 1);
+        return function () {
+            return self[APPLY](obj, applyConcat(args, callSlice(arguments)));
+        }
+    };
+    function nextTick(fn) {
+        setTimeout(fn, 0);
+    }
+    (function () {
+        var pending = "pending",
+            resolved = "resolved",
+            rejected = "rejected",
+            psKey = "[[PromiseStatus]]",
+            pvKey = "[[PromiseValue]]",
             PromiseStatus = {
                 [pending]: pending,
                 [resolved]: resolved,
                 [rejected]: rejected
             };
-        globalScope.Promise__ = Promise__;
-        function Promise__(resolver) {
-            if (!IS_FUNCTION(resolver)) throw 'Promise resolver ' + resolver + ' is not a function';
-            this[psKey] = PromiseStatus[pending];
-            this[pvKey] = UNDEFINED;
-            this.queue = [];
-            var self = this;
-            var notCalled = TRUE;
-            function onFulfilled(PromiseValue) {
-                var result;
-                if (notCalled) {
-                    notCalled = FALSE;
-                    self[psKey] = PromiseStatus[resolved];
-                    self[pvKey] = PromiseValue;
-                    while (self.queue.length) {
-                        var args = self.queue.shift();
-                        if (IS_FUNCTION(args[2])) {
-                            try {
-                                result = args[2](PromiseValue);
-                            } catch (e) {
-                                args[1](e);
-                            }
-                            args[0](result);
-                        } else {
-                            args[0](PromiseValue);
-                        }
-                    }
-                }
+        function nextTickWrap(fn) {
+            return function () {
+                nextTick(fn[BIND][APPLY](fn, applyConcat([UNDEFINED], [callSlice(arguments)])));
             }
-            function onRejected(PromiseValue) {
-                if (notCalled) {
-                    notCalled = FALSE;
-                    self[psKey] = PromiseStatus[rejected];
-                    self[pvKey] = PromiseValue;
-                    while (self.queue.length) {
-                        var args = self.queue.shift();
-                        if (IS_FUNCTION(args[3])) {
-                            try {
-                                result = args[3](PromiseValue);
-                            } catch (e) {
-                                args[1](e);
-                            }
-                            args[0](result);
-                        } else {
-                            args[0](PromiseValue);
-                        }
-                    }
-                }
-            }
-            setTimeout(function () {
-                resolver(onFulfilled, onRejected);
-            }, 0);
         }
-        Promise__.all = function (promiseArr) {
-            return new Promise__(function (resolve, reject) {
-                var resultArr = [];
-                eachAsync(promiseArr, function (next, promise, i) {
-                    promise.then(function (result) {
-                        resultArr[i] = result;
-                        next();
-                    }, function (err) {
-                        next(err);
-                    });
-                }, function (err) {
-                    err ? reject(err) : resolve(resultArr);
-                });
-            });
-        };
-        Promise__.race = function (promiseArr) {
-            return new Promise__(function (resolve, reject) {
-                eachAsync(promiseArr, function (next, promise, i) {
-                    promise.then(function (result) {
-                        next(TRUE);
-                        resolve(result);
-                    }, function (err) {
-                        next(TRUE);
-                        reject(err);
-                    });
-                });
-            });
-        };
-        Promise__.resolve = function (value) {
-            return new Promise__(function (resolve, reject) {
-                resolve(value);
-            });
-        };
-        Promise__.reject = function () {
-            return new Promise__(function (resolve, reject) {
-                reject(value);
-            });
-        };
-        Promise__.prototype.catch = function (onRejected) {
-            return this.then(null, onRejected);
-        };
-        Promise__.prototype.then = function (onFulfilled, onRejected) {
-            var self = this;
-            return new Promise__(function (resolve, reject) {
+        function Promise(resolver) {
+            var notCalled = TRUE, self = new P(), uncaught = {}, queue = [];
+            function _onFulfilled(PromiseValue, onFulfilled, onRejected, resolve, reject) {
                 var result;
-                switch (self[psKey]) {
-                    case PromiseStatus[resolved]:
-                        if (IS_FUNCTION(onFulfilled)) {
-                            try {
-                                result = onFulfilled(self[pvKey]);
-                            } catch (e) {
-                                reject(e);
-                            }
-                            resolve(result);
-                        } else {
-                            resolve(self[pvKey]);
-                        }
-                        break;
-                    case PromiseStatus[rejected]:
-                        if (IS_FUNCTION(onRejected)) {
-                            try {
-                                result = onRejected(self[pvKey]);
-                            } catch (e) {
-                                reject(e);
-                            }
-                            resolve(result);
-                        } else {
-                            reject(self[pvKey]);
-                        }
-                        break;
-                    case PromiseStatus[pending]:
-                        self.queue.push([resolve, reject, onFulfilled, onRejected]);
-                        break;
+                try {
+                    result = onFulfilled(PromiseValue);
+                } catch (e) {
+                    reject(e);
                 }
+                resolve(result);
+            }
+            function _onRejected(PromiseValue, onFulfilled, onRejected, resolve, reject) {
+                var result;
+                try {
+                    result = onRejected(PromiseValue);
+                } catch (e) {
+                    if (e === uncaught) {
+                        reject(PromiseValue);
+                    } else {
+                        reject(e);
+                    }
+                }
+                resolve(result);
+            }
+            function P() {
+                this[psKey] = PromiseStatus[pending];
+                this[pvKey] = UNDEFINED;
+            }
+            P[PROTO].catch = function (onRejected) {
+                return this.then(UNDEFINED, onRejected);
+            };
+            P[PROTO].then = function (onFulfilled, onRejected) {
+                onFulfilled = IS_FUNCTION(onFulfilled) ? onFulfilled : function (PromiseValue) {
+                    return PromiseValue;
+                };
+                onRejected = IS_FUNCTION(onRejected) ? onRejected : function (PromiseValue) {
+                    throw uncaught;
+                };
+                return new Promise(function (resolve, reject) {
+                    var pv = self[pvKey];
+                    switch (self[psKey]) {
+                        case PromiseStatus[resolved]:
+                            _onFulfilled(pv, onFulfilled, onRejected, resolve, reject);
+                            break;
+                        case PromiseStatus[rejected]:
+                            _onRejected(pv, onFulfilled, onRejected, resolve, reject);
+                            break;
+                        default:
+                            queue.push([onFulfilled, onRejected, resolve, reject]);
+                            break;
+                    }
+                });
+            };
+            nextTick(function () {
+                resolver(nextTickWrap(function (PromiseValue) {
+                    if (notCalled) {
+                        notCalled = FALSE;
+                        self[psKey] = PromiseStatus[resolved];
+                        self[pvKey] = PromiseValue;
+                        while (queue[LEN]) {
+                            (function (arg) {
+                                nextTick(function () {
+                                    _onFulfilled[APPLY](UNDEFINED, applyConcat([PromiseValue], arg));
+                                });
+                            })(queue.shift());
+                        }
+                    }
+                }), nextTickWrap(function (PromiseValue) {
+                    if (notCalled) {
+                        notCalled = FALSE;
+                        self[psKey] = PromiseStatus[rejected];
+                        self[pvKey] = PromiseValue;
+                        if (!queue[LEN]) throw "(in promise) " + PromiseValue;
+                        while (queue[LEN]) {
+                            (function (arg) {
+                                nextTick(function () {
+                                    _onRejected[APPLY](UNDEFINED, applyConcat([PromiseValue], arg));
+                                });
+                            })(queue.shift());
+                        }
+                    }
+                }));
             });
-        };
-    }
+            return self;
+        }
+        extend(Promise, {
+            all: function (promiseArr) {
+                return new Promise(function (resolve, reject) {
+                    var resultArr = [];
+                    eachAsync(promiseArr, function (next, promise, i) {
+                        promise.then(function (result) {
+                            resultArr[i] = result;
+                            next();
+                        }, function (err) {
+                            next(err);
+                        });
+                    }, function (err) {
+                        err ? reject(err) : resolve(resultArr);
+                    });
+                });
+            },
+            race: function (promiseArr) {
+                return new Promise(function (resolve, reject) {
+                    eachAsync(promiseArr, function (next, promise, i) {
+                        promise.then(function (result) {
+                            next(TRUE);
+                            resolve(result);
+                        }, function (err) {
+                            next(TRUE);
+                            reject(err);
+                        });
+                    });
+                });
+            },
+            resolve: function (value) {
+                return new Promise(function (resolve, reject) {
+                    resolve(value);
+                });
+            },
+            reject: function (value) {
+                return new Promise(function (resolve, reject) {
+                    reject(value);
+                });
+            }
+        });
+        globalScope.Promise__ = Promise;
+        if (!globalScope.Promise) globalScope.Promise = Promise;
+    })();
     function likeObj(obj) {
         return IS_ARRAY(obj) || IS_OBJECT(obj);
     }
@@ -194,7 +205,7 @@
         return ret;
     }
     function each(obj, iterator) {
-        if (IS_ARRAY(obj)) {
+        if (callToString(obj) === "[object Array]") {
             for (var i = 0, l = obj[LEN]; i < l && iterator(obj[i], i) !== TRUE; i++);
         } else {
             for (var key in obj) {
@@ -259,8 +270,8 @@
         return (ret + number).slice(-len);
     }
     function go(genFn) {
-        return new Promise((rs, rj) => {
-            var gen = genFn.apply(this, callSlice(arguments, 1));
+        return new Promise(function (rs, rj) {
+            var gen = genFn[APPLY](this, callSlice(arguments, 1));
             function onFulfilled(res) {
                 try {
                     next(gen.next(res));
@@ -271,7 +282,7 @@
             function next(ret) {
                 ret.done
                     ? rs(ret.value)
-                    : ret.value.then(onFulfilled, err => {
+                    : ret.value.then(onFulfilled, function (err) {
                         try {
                             next(gen.throw(err));
                         } catch (e) {
@@ -294,14 +305,14 @@
         });
     }
     regExpProto.run = function (str, iterator) {
-        if (!this.global) throw new Error("dead loop");
+        if (!this.global) throw deadLoop;
         for (var match, count = 0; (match = callExec(this, str)) && iterator[APPLY](this, match.concat(++count)) !== TRUE;);
     };
     regExpProto.exec = function (str, iterator) {
         if (!IS_FUNCTION(iterator)) {
             return callExec(this, str);
         } else {
-            if (!this.global) throw new Error("dead loop");
+            if (!this.global) throw deadLoop;
             for (var match, count = 0; (match = callExec(this, str)) && iterator[CALL](this, match, ++count) !== TRUE;);
         }
     };
@@ -344,7 +355,7 @@
         return formatMoney[APPLY](UNDEFINED, applyConcat([this], arguments));
     };
     format = formatString = formatDate = function (obj) {
-        return obj.format.apply(obj, callSlice(arguments, 1));
+        return obj.format[APPLY](obj, callSlice(arguments, 1));
     };
     extend(globalScope, {
         eachAsync: function (arr, iterator, count, callback) {
@@ -375,11 +386,11 @@
                     }
                     !queue[LEN] && callNextCount == callNextBackCount && callback && callback(_stopInfo);
                 }), arr[i], i, arr];
-                setTimeout(function () {
+                nextTick(function () {
                     isGenerator
-                        ? go.apply(UNDEFINED, applyConcat(iterator, args)).catch(callback)
-                        : iterator.apply(UNDEFINED, args);
-                }, 0);
+                        ? go[APPLY](UNDEFINED, applyConcat([iterator], args)).catch(callback)
+                        : iterator[APPLY](UNDEFINED, args);
+                });
             }
         },
         uniq: function (arr) {
@@ -446,7 +457,7 @@
                 });
                 return ret;
             } else {
-                throw new Error(obj + " is not Object");
+                throw "is not Object: " + obj;
             }
         },
         curry: function (fn) {
@@ -480,14 +491,14 @@
             return arr;
         },
         delay: function (fff) {
-            return new Promise(rs => {
+            return new Promise(function (rs) {
                 setTimeout(rs, fff);
             });
         },
         promiseify: function (fn, isMulti) {
             return function () {
                 var args = callSlice(arguments);
-                return new Promise((rs, rj) => {
+                return new Promise(function (rs, rj) {
                     args.push(function (err, res) {
                         err
                             ? rj(err)
@@ -495,7 +506,7 @@
                                 ? rs(callSlice(arguments, 1))
                                 : rs(res);
                     });
-                    fn.apply(this, args);
+                    fn[APPLY](UNDEFINED, args);
                 });
             }
         },
@@ -503,7 +514,7 @@
             return function () {
                 var args = callSlice(arguments),
                     callback = args.pop();
-                promise.apply(UNDEFINED, args).then(result => {
+                promise[APPLY](UNDEFINED, args).then(function (result) {
                     callback(UNDEFINED, result);
                 }, callback);
             }
@@ -524,11 +535,11 @@
                 var err, result, count = 0;
                 do {
                     err = result = UNDEFINED;
-                    yield new Promise(rs => {
-                        go(retryFn).then(res => {
+                    yield new Promise(function (rs) {
+                        go(retryFn).then(function (res) {
                             result = res;
                             rs();
-                        }, e => {
+                        }, function (e) {
                             err = e;
                             rs();
                         });
@@ -537,6 +548,7 @@
                 return result;
             });
         },
+        nextTick: nextTick,
         go: go,
         createArr: createArr,
         onceFn: onceFn,
