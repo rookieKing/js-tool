@@ -1,117 +1,76 @@
 # 这是什么？
 
-这是一个可以在 **浏览器** 或 **nodejs** 中使用的工具类库。
-所有的方法直接绑定到全局变量 **window** 或 **global** 中。
-for...in 迭代未做 hasOwnProperty 判断，
-不能在 Object.prototype 被污染的环境中正常使用。
+这是一个可以在 `浏览器` 或 `nodejs` 中使用的工具类库。
+所有的方法直接绑定到全局变量 `window` 或 `global` 中。
+`for...in` 迭代未做 `hasOwnProperty` 判断，
+不能在 `Object.prototype` 被污染的环境中正常使用。
 
-其中提供的 **function** 或者说污染的 **全局变量** 有：
-[isSth](#issth)
+- 其中提供的 `function` 或者说污染的 `全局变量` 有：
 
-[eachAsync](#eachasync)
+  - [isSth](#issth)
+  - [eachAsync](#eachasync)
+  - [uniq](#uniq)
+  - [range](#range)
+  - [safeHTML](#safehtml)
+  - [processor](#processor)
+  - [getObj](#getobj)
+  - [setObj](#setobj)
+  - [curry](#curry)
+  - [defaults](#defaults)
+  - [keys](#keys)
+  - [delay](#delay)
+  - [promiseify](#promiseify)
+  - [unpromiseify](#unpromiseify)
+  - [createArr](#createarr)
+  - [onceFn](#oncefn)
+  - [callSlice](#callslice)
+  - [likeObj](#likeobj)
+  - [getFirstDefined](#getFirstdefined)
+  - [each](#each)
+  - [any](#any)
+  - [extend](#extend)
+  - [map](#map)
+  - [clone](#clone)
+  - [uncurryCall](#uncurrycall)
+  - [uncurryApply](#uncurryapply)
+  - [format](#format)
+  - [formatString](#formatstring)
+  - [formatDate](#formatdate)
+  - [strFill](#strfill)
+  - [formatMoney](#formatmoney)
+  - [nextTick](#nexttick)
+  - [Promise](#promise)
+  - [Promise__](#promise__)
+  - [go](#go)
+  - [eachGen](#eachgen)
+  - [retry](#retry)
 
-[uniq](#uniq)
+- 其中污染的 `prototype` 有：
 
-[range](#range)
-
-[safeHTML](#safehtml)
-
-[processor](#processor)
-
-[getObj](#getobj)
-
-[setObj](#setobj)
-
-[curry](#curry)
-
-[defaults](#defaults)
-
-[keys](#keys)
-
-[delay](#delay)
-
-[promiseify](#promiseify)
-
-[unpromiseify](#unpromiseify)
-
-[createArr](#createarr)
-
-[onceFn](#oncefn)
-
-[callSlice](#callslice)
-
-[likeObj](#likeobj)
-
-[getFirstDefined](#getFirstdefined)
-
-[each](#each)
-
-[any](#any)
-
-[extend](#extend)
-
-[map](#map)
-
-[clone](#clone)
-
-[uncurryCall](#uncurrycall)
-
-[uncurryApply](#uncurryapply)
-
-[format](#format)
-
-[formatString](#formatstring)
-
-[formatDate](#formatdate)
-
-[strFill](#strfill)
-
-[formatMoney](#formatmoney)
-
-[nextTick](#nexttick)
-
-[Promise](#promise)
-
-[Promise__](#promise__)
-
-[go](#go)
-
-[eachGen](#eachgen)
-
-[retry](#retry)
-
-其中污染的 **prototype** 有：
-[RegExp.prototype.run](#regexpprototyperun)
-
-[RegExp.prototype.exec](#eegexpprototypeexec)
-
-[Date.prototype.format](#dateprototypeformat)
-
-[Function.prototype.bind](#functionprototypebind)
-
-[String.prototype.format](#stringprototypeformat)
-
-[String.prototype.reverse](#stringprototypereverse)
-
-[String.prototype.formatMoney](#stringprototypeformatmoney)
-
-[Number.prototype.formatMoney](#numberprototypeformatmoney)
+  - [RegExp.prototype.run](#regexpprototyperun)
+  - [RegExp.prototype.exec](#eegexpprototypeexec)
+  - [Date.prototype.format](#dateprototypeformat)
+  - [Function.prototype.bind](#functionprototypebind)
+  - [String.prototype.format](#stringprototypeformat)
+  - [String.prototype.reverse](#stringprototypereverse)
+  - [String.prototype.formatMoney](#stringprototypeformatmoney)
+  - [Number.prototype.formatMoney](#numberprototypeformatmoney)
 
 # 这有什么用？ DEMO
 
 ## isSth
 包括
-isNull,
-isUndefined,
-isBoolean,
-isRegExp,
-isFunction,
-isArray,
-isObject,
-isNumber,
-isString,
-isDate
-使用 Object.prototype.toString.call() 判断
+- isNull,
+- isUndefined,
+- isBoolean,
+- isRegExp,
+- isFunction,
+- isArray,
+- isObject,
+- isNumber,
+- isString,
+- isDate
+使用 `Object.prototype.toString.call()` 判断
 
 ``` javascript
 isBoolean(true);
@@ -135,7 +94,7 @@ eachAsync([1, 2, 3, 4, 5, 6, 7, 8], function (next, value, key, arr) {
 //再1秒后输出 7 8 done
 
 //eachAsync(Array, function|function*[, limit], function);
-//其中第二个参数可以为Generator Function
+//其中第二个参数可以为 Generator Function
 //其中第三个参数可以省略，默认值为第一个参数的长度
 ```
 
@@ -526,9 +485,9 @@ applyConcat([1], [2, 3]);
 ## format
 format(String|Date)
 
-如果第一个参数是 **Date** 实例 则相当于 [formatDate](#formatDate)
+如果第一个参数是 **Date** 实例 则相当于 [formatDate](#formatdate)
 
-如果第一个参数是 **String** 类型 则相当于 [formatString](#formatString)
+如果第一个参数是 **String** 类型 则相当于 [formatString](#formatstring)
 
 ## formatString
 ``` javascript
@@ -723,7 +682,7 @@ retry(function* () {
 
 ## RegExp.prototype.exec
 在 global 模式下增加了一个迭代函数
-与 [RegExp.prototype.run](#RegExp.prototype.run) 不同的是 这里的match没有展开
+与 [RegExp.prototype.run](#regexpprototyperun) 不同的是 这里的match没有展开
 
 ``` javascript
 /([a-z]+)(\d+)/g.exec('a11111/bb2222/ccc333/dddd44/eeeee5', function (match, count) {
@@ -738,7 +697,7 @@ retry(function* () {
 ```
 
 ## Date.prototype.format
-请参照 [formatDate](#formatDate)
+请参照 [formatDate](#formatdate)
 
 ``` javascript
 new Date().format('yyyy-MM-dd HH:mm:ss.fff tt');
@@ -762,7 +721,8 @@ test('c', 'd');
 ```
 
 ## String.prototype.format
-请参照 [formatString](#formatString)
+请参照
+[formatString](#formatstring)
 
 ``` javascript
 '{0}--{1}'.format('a', 'b');
@@ -775,14 +735,16 @@ test('c', 'd');
 ```
 
 ## String.prototype.formatMoney
-请参照 [formatMoney](#formatMoney)
+请参照
+[formatMoney](#formatmoney)
 
 ``` javascript
 '123456789.56'.formatMoney();
 ```
 
 ## Number.prototype.formatMoney
-请参照 [formatMoney](#formatMoney)
+请参照
+[formatMoney](#formatmoney)
 
 ``` javascript
 (123456789.56).formatMoney();
@@ -792,39 +754,55 @@ test('c', 'd');
 不会覆盖当前环境中已经存在的Promise。
 
 ## Promise__
-不管当前环境中存不存在 **Promise** 都会创建 **Promise__**
-该实现与 **Chrome** 的实现是绝大部分一致的，这个之后我会专门写一些例子来比较 
-
+不管当前环境中存不存在 `Promise` 都会创建 `Promise__`
+该实现与 `Chrome` 的实现是绝大部分一致的，这个之后我会专门写一些例子来比较 
 
 # 该怎么引用？
 
 由于没有找到压缩ES6代码的工具，现在真是一个尴尬期。
 
-包含 **Promise go eachGen retry** 但需要环境支持 **Generator Function**
-[rookie.tool.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.js)
+包含
+[Promise](#promise)
+[go](#go)
+[eachGen](#eachgen)
+[retry](#retry)
+但需要环境支持 `Generator Function`
 
-不包含 **Promise go eachGen retry**
+* [rookie.tool.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.js)
 
-[rookie.tool.base.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.base.js)
+不包含
+[Promise](#promise)
+[go](#go)
+[eachGen](#eachgen)
+[retry](#retry)
 
-[rookie.tool.base.js](https://raw.githubusercontent.com/rookieking/js-tool/min/rookie.tool.base.js) 压缩版
+* [rookie.tool.base.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.base.js)
+* [rookie.tool.base.js](https://raw.githubusercontent.com/rookieking/js-tool/min/rookie.tool.base.js) 压缩版
 
-包含 **Promise** 依赖 **rookie.tool.base.js**
+包含
+[Promise](#promise)
+依赖 `rookie.tool.base.js`
 
-[rookie.tool.promise.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.promise.js)
+* [rookie.tool.promise.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.promise.js)
+* [rookie.tool.promise.js](https://raw.githubusercontent.com/rookieking/js-tool/min/rookie.tool.promise.js) 压缩版
 
-[rookie.tool.promise.js](https://raw.githubusercontent.com/rookieking/js-tool/min/rookie.tool.promise.js) 压缩版
+包含
+[go](#go)
+[eachGen](#eachgen)
+[retry](#retry)
+依赖 `rookie.tool.base.js` `Promise` 需要环境支持 `Generator Function`
 
-包含 **go eachGen retry** 依赖 **rookie.tool.base.js** 需要环境支持 **Generator Function**
+* [rookie.tool.generator.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.generator.js)
 
-[rookie.tool.generator.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.generator.js)
+包含
+[Promise](#promise)
+[go](#go)
+[eachGen](#eachgen)
+[retry](#retry)
+，不需要环境支持 `Generator Function` ，
+需要引用 `runtime.js` 再通过 `babel` 转码来使用 `Generator Function`
 
-包含 **Promise go eachGen retry** ，不需要环境支持 **Generator Function** ，需要引用 **runtime.js** 再通过 **babel** 转码来使用 **Generator Function**
-
-[rookie.tool.babel.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.babel.js)
-
-[rookie.tool.babel.js](https://raw.githubusercontent.com/rookieking/js-tool/min/rookie.tool.babel.js) 压缩版
-
-[runtime.js](https://raw.githubusercontent.com/rookieking/js-tool/src/runtime.js)
-
-[runtime.js](https://raw.githubusercontent.com/rookieking/js-tool/min/runtime.js) 压缩版
+* [rookie.tool.babel.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.babel.js)
+* [rookie.tool.babel.js](https://raw.githubusercontent.com/rookieking/js-tool/min/rookie.tool.babel.js) 压缩版
+* [runtime.js](https://raw.githubusercontent.com/rookieking/js-tool/src/runtime.js)
+* [runtime.js](https://raw.githubusercontent.com/rookieking/js-tool/min/runtime.js) 压缩版
