@@ -6,53 +6,96 @@ for...in 迭代未做 hasOwnProperty 判断，
 不能在 Object.prototype 被污染的环境中正常使用。
 
 其中提供的 **function** 或者说污染的 **全局变量** 有：
-[isSth](#isSth)
-[eachAsync](#eachAsync)
+[isSth](#issth)
+
+[eachAsync](#eachasync)
+
 [uniq](#uniq)
+
 [range](#range)
-[safeHTML](#safeHTML)
+
+[safeHTML](#safehtml)
+
 [processor](#processor)
-[getObj](#getObj)
-[setObj](#setObj)
+
+[getObj](#getobj)
+
+[setObj](#setobj)
+
 [curry](#curry)
+
 [defaults](#defaults)
+
 [keys](#keys)
+
 [delay](#delay)
+
 [promiseify](#promiseify)
+
 [unpromiseify](#unpromiseify)
-[createArr](#createArr)
-[onceFn](#onceFn)
-[callSlice](#callSlice)
-[likeObj](#likeObj)
-[getFirstDefined](#getFirstDefined)
+
+[createArr](#createarr)
+
+[onceFn](#oncefn)
+
+[callSlice](#callslice)
+
+[likeObj](#likeobj)
+
+[getFirstDefined](#getFirstdefined)
+
 [each](#each)
+
 [any](#any)
+
 [extend](#extend)
+
 [map](#map)
+
 [clone](#clone)
-[uncurryCall](#uncurryCall)
-[uncurryApply](#uncurryApply)
+
+[uncurryCall](#uncurrycall)
+
+[uncurryApply](#uncurryapply)
+
 [format](#format)
-[formatString](#formatString)
-[formatDate](#formatDate)
-[strFill](#strFill)
-[formatMoney](#formatMoney)
-[nextTick](#nextTick)
-[Promise](#Promise)
-[Promise__](#Promise__)
+
+[formatString](#formatstring)
+
+[formatDate](#formatdate)
+
+[strFill](#strfill)
+
+[formatMoney](#formatmoney)
+
+[nextTick](#nexttick)
+
+[Promise](#promise)
+
+[Promise__](#promise__)
+
 [go](#go)
-[eachGen](#eachGen)
+
+[eachGen](#eachgen)
+
 [retry](#retry)
 
 其中污染的 **prototype** 有：
-[RegExp.prototype.run](#RegExp.prototype.run)
-[RegExp.prototype.exec](#RegExp.prototype.exec)
-[Date.prototype.format](#Date.prototype.format)
-[Function.prototype.bind](#Function.prototype.bind)
-[String.prototype.format](#String.prototype.format)
-[String.prototype.reverse](#String.prototype.reverse)
-[String.prototype.formatMoney](#String.prototype.formatMoney)
-[Number.prototype.formatMoney](#Number.prototype.formatMoney)
+[RegExp.prototype.run](#regexpprototyperun)
+
+[RegExp.prototype.exec](#eegexpprototypeexec)
+
+[Date.prototype.format](#dateprototypeformat)
+
+[Function.prototype.bind](#functionprototypebind)
+
+[String.prototype.format](#stringprototypeformat)
+
+[String.prototype.reverse](#stringprototypereverse)
+
+[String.prototype.formatMoney](#stringprototypeformatmoney)
+
+[Number.prototype.formatMoney](#numberprototypeformatmoney)
 
 # 这有什么用？ DEMO
 
@@ -758,23 +801,30 @@ test('c', 'd');
 由于没有找到压缩ES6代码的工具，现在真是一个尴尬期。
 
 包含 **Promise go eachGen retry** 但需要环境支持 **Generator Function**
-[rookie.tool.js](https://rookieking.github.io/js-tool/src/rookie.tool.js)
+[rookie.tool.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.js)
 
 不包含 **Promise go eachGen retry**
-[rookie.tool.base.js](https://rookieking.github.io/js-tool/src/rookie.tool.base.js)
-[rookie.tool.base.js](https://rookieking.github.io/js-tool/min/rookie.tool.base.js) 压缩版
+
+[rookie.tool.base.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.base.js)
+
+[rookie.tool.base.js](https://raw.githubusercontent.com/rookieking/js-tool/min/rookie.tool.base.js) 压缩版
 
 包含 **Promise** 依赖 **rookie.tool.base.js**
-[rookie.tool.promise.js](https://rookieking.github.io/js-tool/src/rookie.tool.promise.js)
-[rookie.tool.promise.js](https://rookieking.github.io/js-tool/min/rookie.tool.promise.js) 压缩版
+
+[rookie.tool.promise.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.promise.js)
+
+[rookie.tool.promise.js](https://raw.githubusercontent.com/rookieking/js-tool/min/rookie.tool.promise.js) 压缩版
 
 包含 **go eachGen retry** 依赖 **rookie.tool.base.js** 需要环境支持 **Generator Function**
-[rookie.tool.generator.js](https://rookieking.github.io/js-tool/src/rookie.tool.generator.js)
 
-包含 **Promise go eachGen retry** ，不需要环境支持 **Generator Function** ，
-[rookie.tool.babel.js](https://rookieking.github.io/js-tool/src/rookie.tool.babel.js)
-[rookie.tool.babel.js](https://rookieking.github.io/js-tool/min/rookie.tool.babel.js) 压缩版
+[rookie.tool.generator.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.generator.js)
 
-需要引用 **runtime.js** 再通过 **babel** 转码来使用 **Generator Function**
-[runtime.js](https://rookieking.github.io/js-tool/src/runtime.js)
-[runtime.js](https://rookieking.github.io/js-tool/min/runtime.js) 压缩版
+包含 **Promise go eachGen retry** ，不需要环境支持 **Generator Function** ，需要引用 **runtime.js** 再通过 **babel** 转码来使用 **Generator Function**
+
+[rookie.tool.babel.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.babel.js)
+
+[rookie.tool.babel.js](https://raw.githubusercontent.com/rookieking/js-tool/min/rookie.tool.babel.js) 压缩版
+
+[runtime.js](https://raw.githubusercontent.com/rookieking/js-tool/src/runtime.js)
+
+[runtime.js](https://raw.githubusercontent.com/rookieking/js-tool/min/runtime.js) 压缩版
