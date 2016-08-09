@@ -332,7 +332,8 @@
         },
         promiseify: function (fn, isMulti) {
             return function () {
-                var args = callSlice(arguments);
+                var self = this,
+                    args = callSlice(arguments);
                 return new Promise(function (rs, rj) {
                     args.push(function (err, res) {
                         err
@@ -341,16 +342,17 @@
                                 ? rs(callSlice(arguments, 1))
                                 : rs(res);
                     });
-                    fn[APPLY](UNDEFINED, args);
+                    fn[APPLY](self, args);
                 });
             };
         },
         unpromiseify: function (promise) {
             return function () {
-                var args = callSlice(arguments),
+                var self = this,
+                    args = callSlice(arguments),
                     callback = args.pop();
                 promise[APPLY](UNDEFINED, args).then(function (result) {
-                    callback(UNDEFINED, result);
+                    callback(self, result);
                 }, callback);
             };
         },
