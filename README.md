@@ -765,7 +765,7 @@ test('c', 'd');
 
 包含所有函数，但需要环境支持 `Generator Function`
 
-* [rookie.tool.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.js)
+* [rookie.tool.js](https://raw.githubusercontent.com/rookieking/js-tool/master/src/rookie.tool.js)
 
 不包含
 [Promise](#promise)
@@ -773,15 +773,15 @@ test('c', 'd');
 [eachGen](#eachgen)
 [retry](#retry)
 
-* [rookie.tool.base.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.base.js)
-* [rookie.tool.base.js](https://raw.githubusercontent.com/rookieking/js-tool/min/rookie.tool.base.js) 压缩版
+* [rookie.tool.base.js](https://raw.githubusercontent.com/rookieking/js-tool/master/src/rookie.tool.base.js)
+* [rookie.tool.base.js](https://raw.githubusercontent.com/rookieking/js-tool/master/min/rookie.tool.base.js) 压缩版
 
 包含
 [Promise](#promise)
 依赖 `rookie.tool.base.js`
 
-* [rookie.tool.promise.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.promise.js)
-* [rookie.tool.promise.js](https://raw.githubusercontent.com/rookieking/js-tool/min/rookie.tool.promise.js) 压缩版
+* [rookie.tool.promise.js](https://raw.githubusercontent.com/rookieking/js-tool/master/src/rookie.tool.promise.js)
+* [rookie.tool.promise.js](https://raw.githubusercontent.com/rookieking/js-tool/master/min/rookie.tool.promise.js) 压缩版
 
 包含
 [go](#go)
@@ -789,7 +789,7 @@ test('c', 'd');
 [retry](#retry)
 依赖 `rookie.tool.base.js` `Promise` 需要环境支持 `Generator Function`
 
-* [rookie.tool.generator.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.generator.js)
+* [rookie.tool.generator.js](https://raw.githubusercontent.com/rookieking/js-tool/master/src/rookie.tool.generator.js)
 
 包含所有函数，不需要环境支持 `Generator Function` ，
 
@@ -797,10 +797,10 @@ test('c', 'd');
 [babel](https://github.com/babel/babel)
 转码来使用 `Generator Function`
 
-* [rookie.tool.babel.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.babel.js)
-* [rookie.tool.babel.js](https://raw.githubusercontent.com/rookieking/js-tool/min/rookie.tool.babel.js) 压缩版
-* [runtime.js](https://raw.githubusercontent.com/rookieking/js-tool/src/runtime.js)
-* [runtime.js](https://raw.githubusercontent.com/rookieking/js-tool/min/runtime.js) 压缩版
+* [rookie.tool.babel.js](https://raw.githubusercontent.com/rookieking/js-tool/master/src/rookie.tool.babel.js)
+* [rookie.tool.babel.js](https://raw.githubusercontent.com/rookieking/js-tool/master/min/rookie.tool.babel.js) 压缩版
+* [runtime.js](https://raw.githubusercontent.com/rookieking/js-tool/master/src/runtime.js)
+* [runtime.js](https://raw.githubusercontent.com/rookieking/js-tool/master/min/runtime.js) 压缩版
 
 
 ## License
