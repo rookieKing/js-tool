@@ -20,7 +20,6 @@ for...in 迭代未做 hasOwnProperty 判断，
 [delay](#delay)
 [promiseify](#promiseify)
 [unpromiseify](#unpromiseify)
-[go](#go)
 [createArr](#createArr)
 [onceFn](#onceFn)
 [callSlice](#callSlice)
@@ -38,8 +37,10 @@ for...in 迭代未做 hasOwnProperty 判断，
 [formatDate](#formatDate)
 [strFill](#strFill)
 [formatMoney](#formatMoney)
-
-还有两个在非ES6环境中需要使用 **babel** 之类的进行转码或者删除
+[nextTick](#nextTick)
+[Promise](#Promise)
+[Promise__](#Promise__)
+[go](#go)
 [eachGen](#eachGen)
 [retry](#retry)
 
@@ -47,12 +48,13 @@ for...in 迭代未做 hasOwnProperty 判断，
 [RegExp.prototype.run](#RegExp.prototype.run)
 [RegExp.prototype.exec](#RegExp.prototype.exec)
 [Date.prototype.format](#Date.prototype.format)
+[Function.prototype.bind](#Function.prototype.bind)
 [String.prototype.format](#String.prototype.format)
 [String.prototype.reverse](#String.prototype.reverse)
 [String.prototype.formatMoney](#String.prototype.formatMoney)
 [Number.prototype.formatMoney](#Number.prototype.formatMoney)
 
-# 这有什么用？ API & DEMO
+# 这有什么用？ DEMO
 
 ## isSth
 包括
@@ -283,41 +285,36 @@ function getData(url, callback) {
                 callback('err2');
                 break;
             case 'url4':
+                //注意！异步函数异常需要异步函数自行处理
                 throw Error('err4');
-                //注意！该异常在 promiseify 与 go 中都不能被捕获，
-                //只能在该函数加异常处理
+                break;
+            case 'url5':
+                //注意！异步函数异常需要异步函数自行处理 示范：
+                try {
+                    throw Error('err5');
+                } catch(e) {
+                    callback(e);
+                }
                 break;
         }
     }, 1000);
 }
 var getDataYield = promiseify(getData);
+//
 go(function* () {
     try {
         var url1Result = yield getDataYield('url1');
         console.log(url1Result);
-    } catch (e) {
-        console.log(e);
-    }
-
-    try {
-        var url2Result = yield getDataYield('url2');
-        console.log(url2Result);
-    } catch (e) {
-        console.log(e);
-    }
-
-    try {
+        //go 本身返回 Promise 可以嵌套使用
+        var result = yield go(function* () {
+            return yield getDataYield('url1');
+        });
+        console.log(result);
         var url3Result = yield getDataYield('url3');
         console.log(url3Result);
     } catch (e) {
         console.log(e);
     }
-
-    //go 本身返回 Promise 可以嵌套使用
-    var result = yield go(function* () {
-        return yield getDataYield('url1');
-    });
-    console.log(result);
 });
 //缺省异常处理示例
 go(function* () {
@@ -698,14 +695,31 @@ retry(function* () {
 ```
 
 ## Date.prototype.format
-相当于[formatDate](#formatDate)
+请参照 [formatDate](#formatDate)
 
 ``` javascript
 new Date().format('yyyy-MM-dd HH:mm:ss.fff tt');
 ```
+## Function.prototype.bind
+如果运行环境不存该函数时才新建该函数
+
+``` javascript
+var obj = {
+    attr: 'jim'
+};
+function Test(arg1, arg2) {
+    console.log(this.attr);
+    console.log(callSlice(arguments));
+}
+var test = Test.bind(obj, 'a', 'b');
+test('c', 'd');
+//打印：
+//jim
+//["a", "b", "c", "d"]
+```
 
 ## String.prototype.format
-相当于[formatString](#formatString)
+请参照 [formatString](#formatString)
 
 ``` javascript
 '{0}--{1}'.format('a', 'b');
@@ -718,19 +732,49 @@ new Date().format('yyyy-MM-dd HH:mm:ss.fff tt');
 ```
 
 ## String.prototype.formatMoney
-相当于[formatMoney](#formatMoney)
+请参照 [formatMoney](#formatMoney)
 
 ``` javascript
 '123456789.56'.formatMoney();
 ```
 
 ## Number.prototype.formatMoney
-相当于[formatMoney](#formatMoney)
+请参照 [formatMoney](#formatMoney)
 
 ``` javascript
 (123456789.56).formatMoney();
 ```
 
-#拿去尝试一下
-[rookie.tool.js](https://rookieking.github.io/js/rookie.tool.js)
+## Promise
+不会覆盖当前环境中已经存在的Promise。
 
+## Promise__
+不管当前环境中存不存在 **Promise** 都会创建 **Promise__**
+该实现与 **Chrome** 的实现是绝大部分一致的，这个之后我会专门写一些例子来比较 
+
+
+# 该怎么引用？
+
+由于没有找到压缩ES6代码的工具，现在真是一个尴尬期。
+
+包含 **Promise go eachGen retry** 但需要环境支持 **Generator Function**
+[rookie.tool.js](https://rookieking.github.io/js-tool/src/rookie.tool.js)
+
+不包含 **Promise go eachGen retry**
+[rookie.tool.base.js](https://rookieking.github.io/js-tool/src/rookie.tool.base.js)
+[rookie.tool.base.js](https://rookieking.github.io/js-tool/min/rookie.tool.base.js) 压缩版
+
+包含 **Promise** 依赖 **rookie.tool.base.js**
+[rookie.tool.promise.js](https://rookieking.github.io/js-tool/src/rookie.tool.promise.js)
+[rookie.tool.promise.js](https://rookieking.github.io/js-tool/min/rookie.tool.promise.js) 压缩版
+
+包含 **go eachGen retry** 依赖 **rookie.tool.base.js** 需要环境支持 **Generator Function**
+[rookie.tool.generator.js](https://rookieking.github.io/js-tool/src/rookie.tool.generator.js)
+
+包含 **Promise go eachGen retry** ，不需要环境支持 **Generator Function** ，
+[rookie.tool.babel.js](https://rookieking.github.io/js-tool/src/rookie.tool.babel.js)
+[rookie.tool.babel.js](https://rookieking.github.io/js-tool/min/rookie.tool.babel.js) 压缩版
+
+需要引用 **runtime.js** 再通过 **babel** 转码来使用 **Generator Function**
+[runtime.js](https://rookieking.github.io/js-tool/src/runtime.js)
+[runtime.js](https://rookieking.github.io/js-tool/min/runtime.js) 压缩版
