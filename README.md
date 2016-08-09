@@ -2,12 +2,13 @@
 
 这是一个可以在 `浏览器` 或 `nodejs` 中使用的工具类库。
 所有的方法直接绑定到全局变量 `window` 或 `global` 中。
+
 `for...in` 迭代未做 `hasOwnProperty` 判断，
 不能在 `Object.prototype` 被污染的环境中正常使用。
 
 - 其中提供的 `function` 或者说污染的 `全局变量` 有：
 
-  - [isSth](#issth)
+  - [is sth](#issth)
   - [eachAsync](#eachasync)
   - [uniq](#uniq)
   - [range](#range)
@@ -70,6 +71,7 @@
 - isNumber,
 - isString,
 - isDate
+
 使用 `Object.prototype.toString.call()` 判断
 
 ``` javascript
@@ -761,12 +763,7 @@ test('c', 'd');
 
 由于没有找到压缩ES6代码的工具，现在真是一个尴尬期。
 
-包含
-[Promise](#promise)
-[go](#go)
-[eachGen](#eachgen)
-[retry](#retry)
-但需要环境支持 `Generator Function`
+包含所有函数，但需要环境支持 `Generator Function`
 
 * [rookie.tool.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.js)
 
@@ -794,13 +791,11 @@ test('c', 'd');
 
 * [rookie.tool.generator.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.generator.js)
 
-包含
-[Promise](#promise)
-[go](#go)
-[eachGen](#eachgen)
-[retry](#retry)
-，不需要环境支持 `Generator Function` ，
-需要引用 `runtime.js` 再通过 `babel` 转码来使用 `Generator Function`
+包含所有函数，不需要环境支持 `Generator Function` ，
+
+需要引用 `runtime.js` 再通过
+[babel](https://github.com/babel/babel)
+转码来使用 `Generator Function`
 
 * [rookie.tool.babel.js](https://raw.githubusercontent.com/rookieking/js-tool/src/rookie.tool.babel.js)
 * [rookie.tool.babel.js](https://raw.githubusercontent.com/rookieking/js-tool/min/rookie.tool.babel.js) 压缩版
