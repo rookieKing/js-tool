@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) 2016, 王磊 <rookielei@gameil.com>.
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT-style license found in the
+ * https://raw.githubusercontent.com/rookieking/js-tool/master/LICENSE file.
+ */
 (function (UNDEFINED) {
     "use strict";
     //跟rookie.tool.js重复

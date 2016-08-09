@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) 2016, 王磊 <rookielei@gameil.com>.
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT-style license found in the
+ * https://raw.githubusercontent.com/rookieking/js-tool/master/LICENSE file.
+ */
 !function(n){"use strict"
 function t(t){return function(){nextTick(t[BIND][c](t,s([n],[l(arguments)])))}}function r(e){function f(n,t,r,e,u){var i
 try{i=t(n)}catch(o){u(o)}e(i)}function l(n,t,r,e,u){var i

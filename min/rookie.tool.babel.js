@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) 2016, 王磊 <rookielei@gameil.com>.
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT-style license found in the
+ * https://raw.githubusercontent.com/rookieking/js-tool/master/LICENSE file.
+ */
 !function(n){"use strict"
 function t(n){setTimeout(n,0)}function r(n){return E(n)||B(n)}function e(n){return function(){return H[A][j](n,arguments)}}function u(n){return function(){return H[j][j](n,arguments)}}function i(){var t
 return o(arguments,function(r){return r!==n?(t=r,M):n}),t}function o(n,t){if("[object Array]"===C(n))for(var r=0,e=n[S];e>r&&t(n[r],r)!==M;r++);else for(var u in n)if(t(n[u],u)===M)return}function c(n,t){var r=x
