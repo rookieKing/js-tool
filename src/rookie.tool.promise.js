@@ -13,12 +13,14 @@
         TRUE = !0,
         PROTO = "prototype",
         APPLY = "apply",
+        BIND = "bind",
         LEN = "length",
         arrayProto = [],
         applyConcat = uncurryApply(arrayProto.concat),
         callSlice = uncurryCall(arrayProto.slice);
     
-    var pending = "pending",
+    var IS_FUNCTION = isFunction,
+        pending = "pending",
         resolved = "resolved",
         rejected = "rejected",
         psKey = "[[PromiseStatus]]",
@@ -33,6 +35,7 @@
         };
     }
     function Promise(resolver) {
+        if (!IS_FUNCTION(resolver)) throw TypeError("Promise resolver " + resolver + " is not a function");
         var notCalled = TRUE, self = new P(), uncaught = {}, queue = [];
         function _onFulfilled(PromiseValue, onFulfilled, onRejected, resolve, reject) {
             var result;

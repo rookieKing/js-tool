@@ -754,10 +754,11 @@ test('c', 'd');
 
 ## Promise
 不会覆盖当前环境中已经存在的Promise。
+该实现与 `Chrome` 的实现是绝大部分一致的，这个之后我会专门写一些例子来比较
 
 ## Promise__
-不管当前环境中存不存在 `Promise` 都会创建 `Promise__`
-该实现与 `Chrome` 的实现是绝大部分一致的，这个之后我会专门写一些例子来比较 
+[Promise](#promise)
+别名，不管当前环境中存不存在 `Promise` 都会创建 `Promise__`
 
 # 该怎么引用？
 

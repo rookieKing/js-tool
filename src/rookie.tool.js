@@ -64,6 +64,7 @@
             };
         }
         function Promise(resolver) {
+            if (!IS_FUNCTION(resolver)) throw TypeError("Promise resolver " + resolver + " is not a function");
             var notCalled = TRUE,
                 self = new P(),
                 uncaught = {},
