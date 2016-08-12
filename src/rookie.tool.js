@@ -45,19 +45,10 @@
             return self[APPLY](obj, applyConcat(args, callSlice(arguments)));
         };
     };
-    function nextTick(fn) {
-        setTimeout(fn, 0);
-    }
     (function () {
         var pending = "pending",
             resolved = "resolved",
-            rejected = "rejected",
-            psKey = "[[PromiseStatus]]",
-            pvKey = "[[PromiseValue]]",
-            PromiseStatus = {};
-        PromiseStatus[pending] = pending;
-        PromiseStatus[resolved] = resolved;
-        PromiseStatus[rejected] = rejected;
+            rejected = "rejected";
         function nextTickWrap(fn) {
             return function () {
                 nextTick(fn[BIND][APPLY](fn, applyConcat([UNDEFINED], [callSlice(arguments)])));
@@ -68,7 +59,9 @@
             var notCalled = TRUE,
                 self = new P(),
                 uncaught = {},
-                queue = [];
+                _ps = pending,
+                _pv = UNDEFINED,
+                _queue = [];
             function _onFulfilled(PromiseValue, onFulfilled, onRejected, resolve, reject) {
                 var result;
                 try {
@@ -92,8 +85,6 @@
                 resolve(result);
             }
             function P() {
-                this[psKey] = PromiseStatus[pending];
-                this[pvKey] = UNDEFINED;
             }
             P[PROTO].catch = function (onRejected) {
                 return this.then(UNDEFINED, onRejected);
@@ -106,16 +97,16 @@
                     throw uncaught;
                 };
                 return new Promise(function (resolve, reject) {
-                    var pv = self[pvKey];
-                    switch (self[psKey]) {
-                        case PromiseStatus[resolved]:
+                    var pv = _pv;
+                    switch (_ps) {
+                        case resolved:
                             _onFulfilled(pv, onFulfilled, onRejected, resolve, reject);
                             break;
-                        case PromiseStatus[rejected]:
+                        case rejected:
                             _onRejected(pv, onFulfilled, onRejected, resolve, reject);
                             break;
                         default:
-                            queue.push([onFulfilled, onRejected, resolve, reject]);
+                            _queue.push([onFulfilled, onRejected, resolve, reject]);
                             break;
                     }
                 });
@@ -124,28 +115,28 @@
                 resolver(nextTickWrap(function (PromiseValue) {
                     if (notCalled) {
                         notCalled = FALSE;
-                        self[psKey] = PromiseStatus[resolved];
-                        self[pvKey] = PromiseValue;
-                        while (queue[LEN]) {
+                        _ps = resolved;
+                        _pv = PromiseValue;
+                        while (_queue[LEN]) {
                             (function (arg) {
                                 nextTick(function () {
                                     _onFulfilled[APPLY](UNDEFINED, applyConcat([PromiseValue], arg));
                                 });
-                            })(queue.shift());
+                            })(_queue.shift());
                         }
                     }
                 }), nextTickWrap(function (PromiseValue) {
                     if (notCalled) {
                         notCalled = FALSE;
-                        self[psKey] = PromiseStatus[rejected];
-                        self[pvKey] = PromiseValue;
-                        if (!queue[LEN]) throw "(in promise) " + PromiseValue;
-                        while (queue[LEN]) {
+                        _ps = rejected;
+                        _pv = PromiseValue;
+                        if (!_queue[LEN]) throw "(in promise) " + PromiseValue;
+                        while (_queue[LEN]) {
                             (function (arg) {
                                 nextTick(function () {
                                     _onRejected[APPLY](UNDEFINED, applyConcat([PromiseValue], arg));
                                 });
-                            })(queue.shift());
+                            })(_queue.shift());
                         }
                     }
                 }));
@@ -196,7 +187,7 @@
         if (!globalScope.Promise) globalScope.Promise = Promise;
     })();
     function likeObj(obj) {
-        return IS_ARRAY(obj) || IS_OBJECT(obj);
+        return obj && typeof obj === "object";
     }
     function uncurryCall(fn) {
         return function () {
@@ -217,10 +208,10 @@
     }
     function each(obj, iterator) {
         if (callToString(obj) === "[object Array]") {
-            for (var i = 0, l = obj[LEN]; i < l && iterator(obj[i], i) !== TRUE; i++);
+            for (var i = 0, l = obj[LEN]; i < l && iterator(obj[i], i, obj) !== TRUE; i++);
         } else {
             for (var key in obj) {
-                if (iterator(obj[key], key) === TRUE) return;
+                if (iterator(obj[key], key, obj) === TRUE) return;
             }
         }
     }
@@ -563,7 +554,11 @@
                 return result;
             });
         },
-        nextTick: nextTick,
+        nextTick: (function () {
+            return globalScope.process
+                ? process.nextTick
+                : function (fn) { setTimeout(fn, 0); };
+        })(),
         go: go,
         createArr: createArr,
         onceFn: onceFn,
