@@ -456,7 +456,7 @@ map({a: 1, b: 2}, function (value, key) {
 ```
 
 ## clone
-支持 circular
+深克隆，支持 circular
 
 ``` javascript
 var circular = {};
@@ -776,7 +776,9 @@ test('c', 'd');
 
 ## Promise
 不会覆盖当前环境中已经存在的Promise。
-该实现与 `Chrome` 的实现是绝大部分一致的，这个之后我会专门写一些例子来比较
+该实现与 `Chrome` 的实现是绝大部分一致的，可以在
+[promise.md](https://raw.githubusercontent.com/rookieking/js-tool/master/promise.md)
+中看到差异。
 
 ## Promise__
 [Promise](#promise)
