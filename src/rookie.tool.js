@@ -49,18 +49,13 @@
         var pending = "pending",
             resolved = "resolved",
             rejected = "rejected";
-        function nextTickWrap(fn) {
-            return function () {
-                nextTick(fn[BIND][APPLY](fn, applyConcat([UNDEFINED], [callSlice(arguments)])));
-            };
-        }
         function Promise(resolver) {
             if (!IS_FUNCTION(resolver)) throw TypeError("Promise resolver " + resolver + " is not a function");
             var notCalled = TRUE,
                 self = new P(),
                 uncaught = {},
                 _ps = pending,
-                _pv = UNDEFINED,
+                _pv,
                 _queue = [];
             function _onFulfilled(PromiseValue, onFulfilled, onRejected, resolve, reject) {
                 var result;
@@ -85,6 +80,8 @@
                 resolve(result);
             }
             function P() {
+                this.getPromiseStatus = function () { return _ps; };
+                this.getPromiseValue = function () { return _pv; };
             }
             P[PROTO].catch = function (onRejected) {
                 return this.then(UNDEFINED, onRejected);
@@ -111,35 +108,28 @@
                     }
                 });
             };
+            function createCallback(callback, is_onRejected) {
+                return function () {
+                    function fn(PromiseValue) {
+                        if (notCalled) {
+                            notCalled = FALSE;
+                            _ps = is_onRejected ? resolved : resolved;
+                            _pv = PromiseValue;
+                            if (is_onRejected && !_queue[LEN]) throw "(in promise) " + PromiseValue;
+                            while (_queue[LEN]) {
+                                (function (arg) {
+                                    nextTick(function () {
+                                        callback[APPLY](UNDEFINED, applyConcat([PromiseValue], arg));
+                                    });
+                                })(_queue.shift());
+                            }
+                        }
+                    }
+                    nextTick(fn[BIND][APPLY](fn, applyConcat([UNDEFINED], [callSlice(arguments)])));
+                };
+            }
             nextTick(function () {
-                resolver(nextTickWrap(function (PromiseValue) {
-                    if (notCalled) {
-                        notCalled = FALSE;
-                        _ps = resolved;
-                        _pv = PromiseValue;
-                        while (_queue[LEN]) {
-                            (function (arg) {
-                                nextTick(function () {
-                                    _onFulfilled[APPLY](UNDEFINED, applyConcat([PromiseValue], arg));
-                                });
-                            })(_queue.shift());
-                        }
-                    }
-                }), nextTickWrap(function (PromiseValue) {
-                    if (notCalled) {
-                        notCalled = FALSE;
-                        _ps = rejected;
-                        _pv = PromiseValue;
-                        if (!_queue[LEN]) throw "(in promise) " + PromiseValue;
-                        while (_queue[LEN]) {
-                            (function (arg) {
-                                nextTick(function () {
-                                    _onRejected[APPLY](UNDEFINED, applyConcat([PromiseValue], arg));
-                                });
-                            })(_queue.shift());
-                        }
-                    }
-                }));
+                resolver(createCallback(_onFulfilled), createCallback(_onRejected, TRUE));
             });
             return self;
         }
@@ -238,17 +228,28 @@
         return ret;
     }
     function clone(obj) {
-        var ret;
-        if (IS_ARRAY(obj)) {
-            ret = [];
-        } else if (IS_OBJECT(obj)) {
-            ret = {};
-        } else {
-            return obj;
+        var objs = [];
+        function _clone(_obj) {
+            var ret;
+            if (isDate(_obj)) {
+                ret = new Date(_obj);
+            } else if (!likeObj(_obj)) {
+                ret = _obj;
+            } else {
+                ret = IS_ARRAY(_obj) ? [] : {};
+                objs.push([_obj, ret]);
+                each(_obj, function (value, key) {
+                    if (!(likeObj(value) && any(objs, function (v, k) {
+                        if (v[0] === value) {
+                            ret[key] = v[1];
+                            return true;
+                        }
+                    }))) ret[key] = _clone(value);
+                });
+            }
+            return ret;
         }
-        return map(obj, function (v) {
-            return likeObj(v) ? clone(v) : v;
-        });
+        return _clone(obj);
     }
     function createArr(len) {
         return map(new Array(len), function (v, i) {
@@ -435,34 +436,32 @@
                 process[APPLY](UNDEFINED, arguments);
             };
         },
-        getObj: function (obj, str) {
+        getObj: function (obj, link) {
             var ret = obj;
-            if (likeObj(obj)) {
-                /[^.]+/g.run(str, function (item) {
-                    return likeObj(ret) && item in ret
-                        ? (ret = ret[item], FALSE)
-                        : (ret = NULL, TRUE);
-                });
+            function iterator(item) {
+                return likeObj(ret) && item in ret
+                    ? (ret = ret[item], FALSE)
+                    : (ret = NULL, TRUE);
             }
-            return ret === obj ? NULL : ret;
+            IS_ARRAY(link) ? each(link, iterator) : /[^.]+/g.run(link, iterator);
+            return ret;
         },
-        setObj: function (obj, str, val) {
-            var ret;
-            if (likeObj(obj)) {
-                /([^.]+)(?=\.([^.]+)|$)/g.run(str, function (match, child, grandson) {
-                    if (grandson) {
-                        if (!likeObj(obj[child])) {
-                            obj[child] = {};
-                        }
-                        obj = obj[child];
-                    } else {
-                        ret = obj[child] = val;
+        setObj: function (obj, link, val) {
+            var _obj = obj;
+            function iterator(match, child, grandson) {
+                if (grandson) {
+                    if (!likeObj(_obj[child])) {
+                        _obj[child] = {};
                     }
-                });
-                return ret;
-            } else {
-                throw "is not Object: " + obj;
+                    _obj = _obj[child];
+                } else {
+                    _obj[child] = val;
+                }
             }
+            IS_ARRAY(link)
+                ? each(link, function (v, i) { iterator(UNDEFINED, link[i], link[i + 1]); })
+                : /([^.]+)(?=\.([^.]+)|$)/g.run(link, iterator);
+            return obj;
         },
         curry: function (fn) {
             var args = [],

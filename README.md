@@ -378,6 +378,7 @@ callSlice(['a', 'b', 'c'], 1);
 
 ## likeObj
 ``` javascript
+//obj && typeof obj === "object"
 likeObj([]);
 //返回 true
 likeObj({});
@@ -455,16 +456,28 @@ map({a: 1, b: 2}, function (value, key) {
 ```
 
 ## clone
+支持 circular
+
 ``` javascript
-var obj = {a: 1, b: {b1: 2}};
-var newObj = clone(obj);
-newObj.b.b1 = 3;
-console.log(obj.b.b1);
-console.log(newObj.b.b1);
-//注意！不要尝试对类似下面的结构进行 clone
-var stackMax = {};
-stackMax.attr = stackMax;
-clone(stackMax);
+var circular = {};
+circular.attr1 = 1;
+circular.attrs = circular;
+circular.arr = [];
+circular.arr[0] = circular.arr;
+circular.attr2 = { a: 2 };
+circular.attr2.b = circular;
+var cloneCircular = clone(circular);
+console.log(cloneCircular === circular); //false
+console.log(cloneCircular.attrs === circular.attrs); //false
+console.log(cloneCircular.attrs.attrs === circular.attrs.attrs); //false
+console.log(cloneCircular.arr === circular.arr); //false
+console.log(cloneCircular.arr[0] === circular.arr[0]); //false
+console.log(cloneCircular.arr[0][0] === circular.arr[0][0]); //false
+console.log(cloneCircular.attr2 === circular.attr2); //false
+console.log(cloneCircular.attr2.b === circular.attr2.b); //false
+console.log(cloneCircular.attr2.b.arr === circular.attr2.b.arr); //false
+console.log(cloneCircular.attr2.b.attr2 === circular.attr2.b.attr2); //false
+console.log(cloneCircular.attr2.b.attr2.b === circular.attr2.b.attr2.b); //false
 ```
 
 ## uncurryCall
@@ -583,6 +596,15 @@ strFill(1, 5, '-');
 //返回 "----1"
 ```
 
+## nextTick
+``` javascript
+nextTick(function(){
+    console.log('called');
+});
+//在浏览器相当于setTimeout(function, 0);
+//在nodejs相当于process.nextTick(function);
+```
+
 ## formatMoney
 注意：只转换小数点之前的
 
@@ -659,16 +681,16 @@ retry(function* () {
 
 ## RegExp.prototype.run
 ``` javascript
-'a11111/bb2222/ccc333/dddd44/eeeee5'.replace(/([a-z]+)(\d+)/g, function ($0, $1, $2) {
-    console.log('{0}:{1}-{2}'.format($0, $1, $2));
+'a11111/bb2222/ccc333/dddd44/eeeee5'.replace(/([a-z]+)(\d+)/g, function ($0, $1, $2, startIndex, str) {
+    console.log('{0}:{1}-{2}|{3}'.format($0, $1, $2, startIndex + $0.length));
     return $0;
 });
 //打印
-//a11111:a-11111
-//bb2222:bb-2222
-//ccc333:ccc-333
-//dddd44:dddd-44
-//eeeee5:eeeee-5
+//a11111:a-11111|6
+//bb2222:bb-2222|13
+//ccc333:ccc-333|20
+//dddd44:dddd-44|27
+//eeeee5:eeeee-5|34
 
 //比 replace 多了一个计数器并绑定了 this
 /([a-z]+)(\d+)/g.run('a11111/bb2222/ccc333/dddd44/eeeee5', function ($0, $1, $2, count) {
@@ -762,47 +784,14 @@ test('c', 'd');
 
 # 该怎么引用？
 
-由于没有找到压缩ES6代码的工具，现在真是一个尴尬期。
+由于没有找到压缩ES6代码的工具，现在真是一个尴尬的时期。
 
-包含所有函数，但需要环境支持 `Generator Function`
-
+包含所有函数，但需要运行环境支持 `Generator Function`
 * [rookie.tool.js](https://raw.githubusercontent.com/rookieking/js-tool/master/src/rookie.tool.js)
-
-不包含
-[Promise](#promise)
-[go](#go)
-[eachGen](#eachgen)
-[retry](#retry)
-
-* [rookie.tool.base.js](https://raw.githubusercontent.com/rookieking/js-tool/master/src/rookie.tool.base.js)
-* [rookie.tool.base.js](https://raw.githubusercontent.com/rookieking/js-tool/master/min/rookie.tool.base.js) 压缩版
-
-包含
-[Promise](#promise)
-依赖 `rookie.tool.base.js`
-
-* [rookie.tool.promise.js](https://raw.githubusercontent.com/rookieking/js-tool/master/src/rookie.tool.promise.js)
-* [rookie.tool.promise.js](https://raw.githubusercontent.com/rookieking/js-tool/master/min/rookie.tool.promise.js) 压缩版
-
-包含
-[go](#go)
-[eachGen](#eachgen)
-[retry](#retry)
-依赖 `rookie.tool.base.js` `Promise` 需要环境支持 `Generator Function`
-
-* [rookie.tool.generator.js](https://raw.githubusercontent.com/rookieking/js-tool/master/src/rookie.tool.generator.js)
-
-包含所有函数，不需要环境支持 `Generator Function` ，
-
-需要引用 `runtime.js` 再通过
-[babel](https://github.com/babel/babel)
-转码来使用 `Generator Function`
-
-* [rookie.tool.babel.js](https://raw.githubusercontent.com/rookieking/js-tool/master/src/rookie.tool.babel.js)
-* [rookie.tool.babel.js](https://raw.githubusercontent.com/rookieking/js-tool/master/min/rookie.tool.babel.js) 压缩版
-* [runtime.js](https://raw.githubusercontent.com/rookieking/js-tool/master/src/runtime.js)
-* [runtime.js](https://raw.githubusercontent.com/rookieking/js-tool/master/min/runtime.js) 压缩版
-
+如果运行环境不支持 `Generator Function` ，可以通过
+[babel](http://babeljs.io/repl/) 转码并引入
+[runtime.js](https://raw.githubusercontent.com/rookieking/js-tool/master/src/runtime.js)
+来使用。
 
 ## License
 ```
