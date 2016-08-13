@@ -777,7 +777,7 @@ test('c', 'd');
 ## Promise
 不会覆盖当前环境中已经存在的Promise。
 该实现与 `Chrome` 的实现是绝大部分一致的，可以在
-[promise.md](https://raw.githubusercontent.com/rookieking/js-tool/master/promise.md)
+[promise.md](./promise.md)
 中看到差异。
 
 ## Promise__
@@ -790,6 +790,7 @@ test('c', 'd');
 
 包含所有函数，但需要运行环境支持 `Generator Function`
 * [rookie.tool.js](https://raw.githubusercontent.com/rookieking/js-tool/master/rookie.tool.js)
+
 如果运行环境不支持 `Generator Function` ，可以通过
 [babel](http://babeljs.io/repl/) 转码并引入
 [runtime.js](https://raw.githubusercontent.com/rookieking/js-tool/master/runtime.js)
