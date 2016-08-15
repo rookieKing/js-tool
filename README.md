@@ -789,11 +789,11 @@ test('c', 'd');
 由于没有找到压缩ES6代码的工具，现在真是一个尴尬的时期。
 
 包含所有函数，但需要运行环境支持 `Generator Function`
-* [rookie.tool.js](https://raw.githubusercontent.com/rookieking/js-tool/master/rookie.tool.js)
+* [rookie.tool.js](https://rookieking.github.io//js-tool/rookie.tool.js)
 
 如果运行环境不支持 `Generator Function` ，可以通过
 [babel](http://babeljs.io/repl/) 转码并引入
-[runtime.js](https://raw.githubusercontent.com/rookieking/js-tool/master/runtime.js)
+[runtime.js](https://rookieking.github.io//js-tool/runtime.js)
 来使用。
 
 ## License
