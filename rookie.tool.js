@@ -3,7 +3,7 @@
  * All rights reserved.
  *
  * This source code is licensed under the MIT-style license found in the
- * https://raw.githubusercontent.com/rookieking/js-tool/master/LICENSE file.
+ * https://github.com/rookieKing/js-tool/blob/master/LICENSE file.
  */
 (function (UNDEFINED) {
     "use strict";
