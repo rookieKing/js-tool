@@ -3,12 +3,13 @@
  * All rights reserved.
  *
  * This source code is licensed under the MIT-style license found in the
- * https://raw.githubusercontent.com/rookieking/js-tool/master/LICENSE file.
+ * https://github.com/rookieKing/js-tool/blob/master/LICENSE file.
  */
 (function (UNDEFINED) {
     "use strict";
     var deadLoop = "dead loop",
-        globalScope = typeof global !== "undefined" ? global : window,
+        OBJECT = "object",
+        globalScope = typeof global === OBJECT ? global : window,
         FALSE = !1,
         TRUE = !0,
         NULL = null,
@@ -177,7 +178,7 @@
         if (!globalScope.Promise) globalScope.Promise = Promise;
     })();
     function likeObj(obj) {
-        return obj && typeof obj === "object";
+        return obj && typeof obj === OBJECT;
     }
     function uncurryCall(fn) {
         return function () {
