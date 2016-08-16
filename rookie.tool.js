@@ -8,7 +8,8 @@
 (function (UNDEFINED) {
     "use strict";
     var deadLoop = "dead loop",
-        globalScope = typeof global !== "undefined" ? global : window,
+        OBJECT = "object",
+        globalScope = typeof global === OBJECT ? global : window,
         FALSE = !1,
         TRUE = !0,
         NULL = null,
@@ -177,7 +178,7 @@
         if (!globalScope.Promise) globalScope.Promise = Promise;
     })();
     function likeObj(obj) {
-        return obj && typeof obj === "object";
+        return obj && typeof obj === OBJECT;
     }
     function uncurryCall(fn) {
         return function () {
