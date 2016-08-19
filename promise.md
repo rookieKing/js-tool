@@ -10,20 +10,83 @@ console.log(p1 instanceof Promise); //true
 console.log('then' in Promise.prototype); //true
 console.log('catch' in Promise.prototype); //true
 var p2 = Promise(function(){ }); //TypeError
+//可以直接在控制台观察 p1 的状态
+p1;
 
 var p1_ = new Promise__(function () { });
 console.log(p1 instanceof Promise__); //false
 console.log('then' in Promise__.prototype); //false
 console.log('catch' in Promise__.prototype); //false
 var p2_ = Promise__(function () { }); //ok
-
-var p2 = new Promise(function () { });
-//可以直接在控制台观察 p2 的状态
-p2;
-var p2_ = new Promise__(function () { });
 //需要调用方法来获得当前状态
-p2_.getPromiseStatus();
-p2_.getPromiseValue();
+p1_.getPromiseStatus();
+p1_.getPromiseValue();
+
+
+var p3 = new Promise(function (resolve) {
+    setTimeout(function () {
+        resolve('p3');
+    }, 1000);
+});
+var p4 = new Promise(function (resolve) {
+    setTimeout(function () {
+        resolve('p4');
+    }, 1000);
+});
+//对象可以冒充
+p3.then.call(p4, function (result) {
+    console.log(result); //打印 p4
+});
+
+var p3_ = new Promise__(function (resolve) {
+    setTimeout(function () {
+        resolve('p3_');
+    }, 1000);
+});
+var p4_ = new Promise__(function (resolve) {
+    setTimeout(function () {
+        resolve('p4_');
+    }, 1000);
+});
+//对象不可以冒充
+p3_.then.call(p4_, function (result) {
+    console.log(result); //打印 p3_
+});
+
+
+var p5 = new Promise(function (resolve, reject) {
+    setTimeout(function () {
+        reject('p5');
+    }, 1000);
+});
+var p6 = new Promise(function (resolve, reject) {
+    setTimeout(function () {
+        reject('p6');
+    }, 1000);
+});
+//对象可以冒充
+p5.catch.call(p6, function (result) {
+    console.log(result);
+});
+//p5 异常未捕获
+//打印 p6
+
+var p5_ = new Promise__(function (resolve, reject) {
+    setTimeout(function () {
+        reject('p5_');
+    }, 1000);
+});
+var p6_ = new Promise(function (resolve, reject) {
+    setTimeout(function () {
+        reject('p6_');
+    }, 1000);
+});
+//对象不可以冒充
+p5_.catch.call(p6_, function (result) {
+    console.log(result);
+});
+//p6 异常未捕获
+//打印 p4
 ```
 
 - 相同处

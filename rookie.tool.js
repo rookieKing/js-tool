@@ -85,7 +85,7 @@
                 this.getPromiseValue = function () { return _pv; };
             }
             P[PROTO].catch = function (onRejected) {
-                return this.then(UNDEFINED, onRejected);
+                return P[PROTO].then(UNDEFINED, onRejected);
             };
             P[PROTO].then = function (onFulfilled, onRejected) {
                 onFulfilled = IS_FUNCTION(onFulfilled) ? onFulfilled : function (PromiseValue) {
