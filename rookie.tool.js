@@ -114,7 +114,7 @@
                     function fn(PromiseValue) {
                         if (notCalled) {
                             notCalled = FALSE;
-                            _ps = is_onRejected ? resolved : resolved;
+                            _ps = is_onRejected ? rejected : resolved;
                             _pv = PromiseValue;
                             if (is_onRejected && !_queue[LEN]) throw "(in promise) " + PromiseValue;
                             while (_queue[LEN]) {
