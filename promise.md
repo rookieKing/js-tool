@@ -86,7 +86,7 @@ p5_.catch.call(p6_, function (result) {
     console.log(result);
 });
 //p6 异常未捕获
-//打印 p4
+//打印 p5
 ```
 
 - 相同处
