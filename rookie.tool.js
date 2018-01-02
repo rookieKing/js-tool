@@ -524,13 +524,13 @@
                 }, callback);
             };
         },
-        eachGen: function (obj, gen) {
+        eachGen: function (obj, gen, ctx) {
             return go(function* () {
                 if (IS_ARRAY(obj)) {
-                    for (var i = 0, l = obj[LEN]; i < l && (yield go(gen, obj[i], i)) !== TRUE; i++);
+                    for (var i = 0, l = obj[LEN]; i < l && (yield go[CALL](ctx, gen, obj[i], i)) !== TRUE; i++);
                 } else {
                     for (var key in obj) {
-                        if ((yield go(gen, obj[key], key)) === TRUE) return;
+                        if ((yield go[CALL](ctx, gen, obj[key], key)) === TRUE) return;
                     }
                 }
             });
