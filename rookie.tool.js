@@ -95,13 +95,12 @@
                     throw uncaught;
                 };
                 return new Promise(function (resolve, reject) {
-                    var pv = _pv;
                     switch (_ps) {
                         case resolved:
-                            _onFulfilled(pv, onFulfilled, onRejected, resolve, reject);
+                            _onFulfilled(_pv, onFulfilled, onRejected, resolve, reject);
                             break;
                         case rejected:
-                            _onRejected(pv, onFulfilled, onRejected, resolve, reject);
+                            _onRejected(_pv, onFulfilled, onRejected, resolve, reject);
                             break;
                         default:
                             _queue.push([onFulfilled, onRejected, resolve, reject]);
