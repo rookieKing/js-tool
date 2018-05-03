@@ -364,19 +364,21 @@
     };
     extend(globalScope, {
         eachAsync: function (arr, iterator, count, callback) {
+            var arrLength = arr[LEN];
             if (IS_FUNCTION(count)) {
                 callback = count;
-                count = arr[LEN];
+                count = arrLength;
             }
-            if (count === UNDEFINED) count = arr[LEN];
-            for (var queue = createArr(arr[LEN]).reverse(),
+            if (!arrLength) return callback && callback();
+            if (count === UNDEFINED) count = arrLength;
+            for (var queue = createArr(arrLength).reverse(),
                 i = 0,
                 callNextCount = 0,
                 callNextBackCount = 0,
                 constructor = iterator.constructor,
                 constructorName = constructor.name || constructor.displayName,
                 isGenerator = constructorName == "GeneratorFunction",
-                _stopInfo; i < count && i < arr[LEN]; i++) {
+                _stopInfo; i < count && i < arrLength; i++) {
                 next(queue.pop());
             }
             function next(i) {
