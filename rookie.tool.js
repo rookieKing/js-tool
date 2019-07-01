@@ -427,15 +427,16 @@
             var timeoutId;
             var process = function () {
                 clearTimeout(timeoutId);
-                var args = arguments;
+                var self = this,
+                    args = arguments;
                 timeoutId = setTimeout(function () {
                     IS_FUNCTION(callback)
-                        ? callback(fn[APPLY](UNDEFINED, args))
-                        : fn[APPLY](UNDEFINED, args);
+                        ? callback(fn[APPLY](self, args))
+                        : fn[APPLY](self, args);
                 }, milliseconds || 400);
             }
             return function () {
-                process[APPLY](UNDEFINED, arguments);
+                process[APPLY](this, arguments);
             };
         },
         getObj: function (obj, link) {
