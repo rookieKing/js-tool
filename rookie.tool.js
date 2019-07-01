@@ -1,4 +1,4 @@
-/**
+/*!
  * Copyright (c) 2016, 王磊 <rookielei@gameil.com>.
  * All rights reserved.
  *
