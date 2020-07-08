@@ -1,0 +1,19 @@
+{
+  "name": "js-tool",
+  "version": "1.0.0",
+  "description": "这是一个可以在 `浏览器` 或 `nodejs` 中使用的工具类库。\r 所有的方法直接绑定到全局变量 `window` 或 `global` 中。",
+  "main": "rookie.tool.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rookieKing/js-tool.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rookieKing/js-tool/issues"
+  },
+  "homepage": "https://github.com/rookieKing/js-tool#readme"
+}
