@@ -439,12 +439,12 @@
                 process[APPLY](this, arguments);
             };
         },
-        getObj: function (obj, link) {
+        getObj: function (obj, link, defautlVlaue) {
             var ret = obj;
             function iterator(item) {
                 return likeObj(ret) && item in ret
                     ? (ret = ret[item], FALSE)
-                    : (ret = NULL, TRUE);
+                    : (ret = getFirstDefined(defautlVlaue, NULL), TRUE);
             }
             IS_ARRAY(link) ? each(link, iterator) : /[^.]+/g.run(link, iterator);
             return ret;
