@@ -48,7 +48,7 @@
     };
     (function () {
         var pending = "pending",
-            resolved = "resolved",
+            resolved = "fulfilled",
             rejected = "rejected";
         function Promise(resolver) {
             if (!IS_FUNCTION(resolver)) throw TypeError("Promise resolver " + resolver + " is not a function");
