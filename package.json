@@ -2,8 +2,11 @@
   "name": "js-tool",
   "version": "1.0.0",
   "description": "这是一个可以在 `浏览器` 或 `nodejs` 中使用的工具类库。\r 所有的方法直接绑定到全局变量 `window` 或 `global` 中。",
-  "main": "rookie.tool.js",
+  "main": "rookie.tool.es5.js",
+  "module": "rookie.tool.js",
   "scripts": {
+    "es5": "webpack -c ./webpack.config.es5.js",
+    "es6": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +18,13 @@
   "bugs": {
     "url": "https://github.com/rookieKing/js-tool/issues"
   },
-  "homepage": "https://github.com/rookieKing/js-tool#readme"
+  "homepage": "https://github.com/rookieKing/js-tool#readme",
+  "devDependencies": {
+    "@babel/core": "^7.17.4",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "babel-loader": "^8.2.3",
+    "webpack": "^5.69.0",
+    "webpack-cli": "^4.9.2"
+  }
 }
