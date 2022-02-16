@@ -1,6 +1,6 @@
 {
   "name": "tool-js-rookie",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "这是一个可以在 `浏览器` 或 `nodejs` 中使用的工具类库。\r 所有的方法直接绑定到全局变量 `window` 或 `global` 中。",
   "main": "rookie.tool.es5.js",
   "module": "rookie.tool.js",
