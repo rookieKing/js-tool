@@ -5,7 +5,7 @@
  * This source code is licensed under the MIT-style license found in the
  * https://github.com/rookieKing/js-tool/blob/master/LICENSE file.
  */
-import { globalScope } from "./src/globalScope";
+import { globalScope } from "./globalScope";
 
 (function () {
     "use strict";
