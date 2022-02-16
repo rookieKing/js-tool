@@ -29,6 +29,7 @@ jobs:
           npm run es6
           cp *.md ./dist
           cp package.json ./dist
+          cp .npmrc ./dist
           cd dist
       - 
         name: Deploy to npm
