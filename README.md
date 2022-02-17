@@ -3,6 +3,18 @@
 这是一个可以在 `浏览器` 或 `nodejs` 中使用的工具类库。
 所有的方法直接绑定到全局变量 `window` 或 `global` 中。
 
+# 该怎么引用？
+```bash
+# 安装
+npm i tool-js-rookie --save
+```
+
+```js
+// 导入，因为设计的是全局污染所以只需一次导入
+import 'tool-js-rookie';
+// import 'tool-js-rookie/tool-js-rookie.js'; // 这个是 Generator Fuction 未转码的版本，可以理解为不兼容IE
+```
+
 `for...in` 迭代未做 `hasOwnProperty` 判断，
 不能在 `Object.prototype` 被污染的环境中正常使用。
 
@@ -783,18 +795,6 @@ test('c', 'd');
 ## Promise__
 [Promise](#promise)
 别名，不管当前环境中存不存在 `Promise` 都会创建 `Promise__`
-
-# 该怎么引用？
-
-由于没有找到压缩ES6代码的工具，现在真是一个尴尬的时期。
-
-包含所有函数，但需要运行环境支持 `Generator Function`
-* [rookie.tool.js](https://rookieking.github.io/js-tool/rookie.tool.js)
-
-如果运行环境不支持 `Generator Function` ，可以通过
-[babel](http://babeljs.io/repl/) 转码并引入
-[runtime.js](https://rookieking.github.io/js-tool/runtime.js)
-来使用。
 
 ## License
 ```
