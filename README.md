@@ -14,7 +14,12 @@ npm i tool-js-rookie --save
 import 'tool-js-rookie';
 // import 'tool-js-rookie/tool-js-rookie.js'; // 这个是 Generator Fuction 未转码的版本，可以理解为不兼容IE
 ```
-
+或者
+```html
+<script src="https://cdn.jsdelivr.net/npm/tool-js-rookie@1.0.2/rookie.tool.js"></script>
+<!-- 兼容 ie 的版本 -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/tool-js-rookie@1.0.2/rookie.tool.es5.js"></script> -->
+```
 `for...in` 迭代未做 `hasOwnProperty` 判断，
 不能在 `Object.prototype` 被污染的环境中正常使用。
 
